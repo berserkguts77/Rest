@@ -1,0 +1,135 @@
+<!DOCTYPE>
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script>
+$(document).ready(()=>{
+    // 삭제
+    $('#btn_remove').click(()=>{
+    	
+        var ck = new Array();	// let ck = [];
+        $('.ck:checked').each((index,item)=>{
+            ck.push($(item).val());
+        });
+        
+        $.ajax({
+            url:'/remove',
+            type:'GET',
+            data:{ck:ck},
+            success:(row)=>{
+                alert(row+'행 삭제');
+                $('#btn_list').trigger('click');
+            }
+        });
+        
+    });
+ 
+    // 추가
+    $('#btn_add').click(()=>{	//	$('#btn_add').click(()=>{})
+        var id = $('#id').val();
+        var pw = $('#pw').val();
+        var name = $('#name').val();
+        var age = $('#age').val();
+        var gender = $('#gender').val();
+ 
+        $.ajax({	//	RPC 함수 호출 / 비동기 함수 호출
+            url:'/add',	// 함수이름
+            type:'POST',	
+            data:{id:id,pw:pw,name:name,age:age,gender:gender},	// 매개변수 객체
+            success:((row)=>{
+                alert(row+'행 추가');
+                $('#btn_list').trigger('click');	// btn_list로 버튼을 클릭해주세요
+            });
+        }); 
+    });
+    
+    // 수정
+    $('#btn_modify').click(()=>{
+        var id = $('#id').val();
+        var pw = $('#pw').val();
+        var name = $('#name').val();
+        var age = $('#age').val();
+        var gender = $('#gender').val();
+ 
+        $.ajax({
+            url:'/modifyById',
+            type:'POST',
+            data:{id:id,pw:pw,name:name,age:age,gender:gender},
+            success:((data)=>{
+                alert(data+'님 수정');
+                $('#btn_list').trigger('click');
+            });
+        });
+    });
+    // 목록
+    $('#btn_list').click(()=>{
+        $.ajax({
+            url:'/list',
+            type:'GET',
+            success:((data)=>{
+                $('#list').empty();
+                $(data).each(((index,item)=>{
+                    $('#list').append('<tr>');
+                    $('#list').append('<td><input type="checkbox" class="ck" value="'+item.id+'"></td>');
+                    $('#list').append('<td>'+item.id+'</td>');
+                    $('#list').append('<td>'+item.pw+'</td>');
+                    $('#list').append('<td>'+item.name+'</td>');
+                    $('#list').append('<td>'+item.age+'</td>');
+                    $('#list').append('<td>'+item.gender+'</td>');
+                    $('#list').append('</tr>');
+                });                
+            });                          
+        });                
+    });
+});
+</script>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>pw</th>
+                <th>name</th>
+                <th>age</th>
+                <th>gender</th>
+                <th>추가</th>
+                <th>수정</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="text" id="id"></td>
+                <td><input type="password" id="pw"></td>
+                <td><input type="text" id="name"></td>
+                <td><input type="text" id="age"></td>
+                <td>
+                    <select id="gender">
+                        <option value="m">남</option>
+                        <option value="f">여</option>
+                    </select>
+                </td>
+                <td><button id="btn_add">add</button></td>
+                <td><button id="btn_modify">modify</button></td>
+            </tr>
+        </tbody>
+    </table>
+ 
+    <button id="btn_list">회원리스트</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th></th>
+                <th>id</th>
+                <th>pw</th>
+                <th>name</th>
+                <th>age</th>
+                <th>gender</th>
+            </tr>
+        </thead>
+        <tbody id="list">
+        </tbody>
+    </table>
+    <button id="btn_remove">remove</button>
+</body>
+</html>
