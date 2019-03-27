@@ -1,50 +1,47 @@
 <!DOCTYPE>
 <html>
 <head>
+<meta charset="UTF-8">
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script>
-$(document).ready(()=>{
+$(document).ready(function(){
     // 삭제
-    $('#btn_remove').click(()=>{
-    	
-        var ck = new Array();	// let ck = [];
-        $('.ck:checked').each((index,item)=>{
+    $('#btn_remove').on('click',function(){
+        var ck = new Array();
+        $('.ck:checked').each(function(index,item){
             ck.push($(item).val());
         });
-        
         $.ajax({
             url:'/remove',
             type:'GET',
             data:{ck:ck},
-            success:(row)=>{
-                alert(row+'행 삭제');
+            success:function(data){
+                alert(data+'삭제');
                 $('#btn_list').trigger('click');
             }
         });
-        
     });
  
     // 추가
-    $('#btn_add').click(()=>{	//	$('#btn_add').click(()=>{})
+    $('#btn_add').on('click',function(){
         var id = $('#id').val();
         var pw = $('#pw').val();
         var name = $('#name').val();
         var age = $('#age').val();
         var gender = $('#gender').val();
  
-        $.ajax({	//	RPC 함수 호출 / 비동기 함수 호출
-            url:'/add',	// 함수이름
-            type:'POST',	
-            data:{id:id,pw:pw,name:name,age:age,gender:gender},	// 매개변수 객체
-            success:((row)=>{
-                alert(row+'행 추가');
-                $('#btn_list').trigger('click');	// btn_list로 버튼을 클릭해주세요
-            });
-        }); 
+        $.ajax({
+            url:'/add',
+            type:'POST',
+            data:{id:id,pw:pw,name:name,age:age,gender:gender},
+            success:function(data){
+                alert(data+'님 추가');
+                $('#btn_list').trigger('click');
+            }
+        });
     });
-    
     // 수정
-    $('#btn_modify').click(()=>{
+    $('#btn_modify').on('click',function(){
         var id = $('#id').val();
         var pw = $('#pw').val();
         var name = $('#name').val();
@@ -55,20 +52,20 @@ $(document).ready(()=>{
             url:'/modifyById',
             type:'POST',
             data:{id:id,pw:pw,name:name,age:age,gender:gender},
-            success:((data)=>{
+            success:function(data){
                 alert(data+'님 수정');
                 $('#btn_list').trigger('click');
-            });
+            }
         });
     });
     // 목록
-    $('#btn_list').click(()=>{
+    $('#btn_list').on('click',function(){
         $.ajax({
             url:'/list',
             type:'GET',
-            success:((data)=>{
+            success:function(data){
                 $('#list').empty();
-                $(data).each(((index,item)=>{
+                $(data).each(function(index,item){
                     $('#list').append('<tr>');
                     $('#list').append('<td><input type="checkbox" class="ck" value="'+item.id+'"></td>');
                     $('#list').append('<td>'+item.id+'</td>');
@@ -77,9 +74,9 @@ $(document).ready(()=>{
                     $('#list').append('<td>'+item.age+'</td>');
                     $('#list').append('<td>'+item.gender+'</td>');
                     $('#list').append('</tr>');
-                });                
-            });                          
-        });                
+                });
+            }
+        });
     });
 });
 </script>
